@@ -1,0 +1,10 @@
+<config>
+	<grpc xmlns="http://cisco.com/ns/yang/Cisco-IOS-XR-man-ems-cfg">
+		<port>57777</port>
+		<no-tls></no-tls>
+		<enable></enable>
+		<service-layer>
+			<enable></enable>
+		</service-layer>
+	</grpc>
+</config>
