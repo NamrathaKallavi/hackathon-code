@@ -31,15 +31,18 @@ HTTPS_PROXY = ""
 # through ncclient onbox. 
 # Hint: Add to this list on the server and download and use with ncclient
 # appropriately for each router to achieve your final configuration 
-XML_FILE_LIST =  ['lldp_config_oc.xml', 
-                  'interface_config_oc.xml']
+XML_FILE_LIST =  ['grpc_config.xml',
+                  'hostname.xml',
+                  'lldp_oc.xml',
+#                  'interfaces_oc.xml',
+                  'mpls_static.xml']
 
 # Use this Serial Number map to figure out the router specific URL
 # to use for downloads based on the local router's Serial Number
-SERIAL_NO_MAP = {'FGE00050000': 'rtr1',
-                 'FGE00080000': 'rtr2',
-                 'FGE000b0000': 'rtr3',
-                 'FGE00170000': 'rtr4'}
+SERIAL_NO_MAP = {'FGE00080000': 'rtr1',
+                 'FGE000e0000': 'rtr2',
+                 'FGE00140000': 'rtr3',
+                 'FGE002c0000': 'rtr4'}
 
 def install_and_import(package):
     import importlib
@@ -252,6 +255,21 @@ if __name__ == '__main__':
         sys.exit(1)    
     else:
         # From here on, the operation is just normal ncclient usage
+        # Configure the box with the configs mentioned in the xml files
+        # Iterate each xml file and apply the config
+        for each_config_file_name in XML_FILE_LIST:
+            with open('/root/' + each_config_file_name, 'r') as each_config_file:
+                config_str = each_config_file.read().replace('\n', '')
+            
+            print("Config-file %s, config-str %s"%(each_config_file_name, config_str))
+            nc_mgr.edit_config(target = 'candidate', config = config_str)
+            nc_mgr.validate()
+            res = nc_mgr.commit(confirmed=True )
+            print("Result of commit %s"%(res))
+            #ztp_script.syslogger.info("Config-file %s, config-str %s, resp %s",
+            #                            each_config_file_name, config_str, resp.xml)
+        ztp_script.syslogger.info("All configs done")
+
         response = nc_mgr.get_config(source="running")
         print(response)
         response_dict=xmltodict.parse(str(response))
