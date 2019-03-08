@@ -10,7 +10,7 @@
     - name: Install python dependencies
       become: yes
       pip:
-              name: "{{ item.name }}"
+              name: "{{item.name}}"
               state: present
       with_items:
       - { name: docker}
