@@ -4,12 +4,29 @@
   gather_facts: no
 
   tasks:
-  - name: Configure BGP on the router
+  - name: Configure BGP on the router rtr1
     netconf_config:
-      host: "{{ ansible_host }}"
-      port: "{{ netconf_port }}"
-      username: "{{ ansible_user }}"
-      password: "{{ ansible_password }}"
+      host: "100.96.0.14"
+      port: "57777"
+      username: "rtrdev"
+      password: "nanog75sf"
       hostkey_verify: no
       look_for_keys: false
-      xml: "{{ lookup('file', xml_file) }}"
+      xml: "lookup('file', 'xml/rtr1-bgp.xml') "
+
+  - name: Pausing to connect
+    pause:
+            minutes: 1
+  - name: Configure BGP on the router rtr4
+    netconf_config:
+      host: "100.96.0.26"
+      port: "57777"
+      username: "rtrdev"
+      password: "nanog75sf"
+      hostkey_verify: no
+      look_for_keys: false
+      xml: "lookup('file', 'xml/rtr4-bgp.xml')"
+
+  - name: Pausing to connect to rtr4
+    pause:
+            minutes: 1 

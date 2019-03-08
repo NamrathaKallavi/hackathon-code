@@ -1,0 +1,32 @@
+
+---
+
+- name: Run telemetry sevice
+  hosts: local
+  connection: local
+  gather_facts: no
+
+  tasks:
+    - name: Install python dependencies
+      become: yes
+      pip:
+              name: "{{ item.name }}"
+              state: present
+      with_items:
+      - { name: docker}
+
+    - name: Kafka python
+      become: yes
+      pip:
+              name: kafka-python        
+              state: present
+
+    - name: Start docker container
+      docker_container:
+              name: telemetry
+              state: started
+              image: akshshar/nanog75-telemetry
+              command: /bin/bash -c "python3 /home/tesuto/code-samples/telemetry/telemetry.py"
+              volumes:
+                    - /home/tesuto/code-samples/telemetry/telemetry.py
+
